@@ -4,10 +4,30 @@
   "description": "zod-request simplifies the process of integrating Zod with Request, URLSearchParams, and FormData.",
   "main": "main.js",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": ["zod", "request", "zod-request"],
   "author": "Armando Garcia",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "format": "prettier . --write"
+  },
+  "devDependencies": {
+    "prettier": "3.0.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.21.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "volta": {
+    "node": "20.5.0"
+  },
+  "prettier": {
+    "printWidth": 120
+  },
+  "keywords": [
+    "zod",
+    "request",
+    "zod-request"
+  ]
 }
