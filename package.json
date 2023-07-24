@@ -1,9 +1,13 @@
 {
   "name": "zod-web-api",
   "description": "Zod Web API simplifies the process of integrating Zod with Web APIs including Request, URLSearchParams, and FormData.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
-  "author": "Armando Garcia",
+  "author": "Armando Garcia <armando.garcia@ottersoft.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ottersoft-x/zod-web-api"
+  },
   "license": "MIT",
   "files": [
     "dist"
@@ -35,10 +39,20 @@
   "prettier": {
     "printWidth": 120
   },
+  "bugs": {
+    "url": "https://github.com/ottersoft-x/zod-web-api/issues"
+  },
   "keywords": [
     "zod",
+    "typescript",
+    "schema",
+    "validation",
+    "type",
+    "inference",
     "web-apis",
     "validation",
+    "url-search-params",
+    "form-data",
     "zod-web-api",
     "zod-request"
   ]
