@@ -1,6 +1,6 @@
 {
   "name": "zod-request",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "zod-request simplifies the process of integrating Zod with Request, URLSearchParams, and FormData.",
   "main": "main.js",
   "type": "module",
