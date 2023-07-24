@@ -1,7 +1,7 @@
 {
   "name": "zod-request",
-  "description": "zod-request simplifies the process of integrating Zod with Request, URLSearchParams, and FormData.",
-  "version": "0.0.5",
+  "description": "Zod-Request simplifies the process of integrating Zod with Request, URLSearchParams, and FormData.",
+  "version": "0.0.6",
   "type": "module",
   "author": "Armando Garcia",
   "license": "MIT",
