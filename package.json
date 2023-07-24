@@ -1,7 +1,7 @@
 {
-  "name": "zod-request",
-  "description": "Zod-Request simplifies the process of integrating Zod with Request, URLSearchParams, and FormData.",
-  "version": "0.0.6",
+  "name": "zod-web-api",
+  "description": "Zod Web API simplifies the process of integrating Zod with Web APIs including Request, URLSearchParams, and FormData.",
+  "version": "0.0.7",
   "type": "module",
   "author": "Armando Garcia",
   "license": "MIT",
@@ -37,7 +37,9 @@
   },
   "keywords": [
     "zod",
-    "request",
+    "web-apis",
+    "validation",
+    "zod-web-api",
     "zod-request"
   ]
 }

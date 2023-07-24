@@ -2,14 +2,14 @@
   <img src="zod-logo.svg" width="200px" align="center" alt="Zod logo" />
   <h1 align="center">Zod ❤️ Web API</h1>
   <p align="center">
-    Zod Web API simplifies the process of integrating <a href="https://github.com/colinhacks/zod">Zod</a> with <a href="https://developer.mozilla.org/en-US/docs/Web/API">Web APIs</a>, including <code>Request</code>, <code>URLSearchParams</code>, <code>FormData</code>
+    Zod Web API simplifies the process of integrating <a href="https://github.com/colinhacks/zod">Zod</a> with <a href="https://developer.mozilla.org/en-US/docs/Web/API">Web APIs</a> including <code>Request</code>, <code>URLSearchParams</code>, <code>FormData</code>.
   </p>
 </p>
 <br/>
 <p align="center">
-<a href="https://github.com/ottersoft-x/zod-request/actions?query=branch%3Amain"><img src="https://github.com/ottersoft-x/zod-request/actions/workflows/main.yml/badge.svg?event=push&branch=main" alt="Zod Web API CI status" /></a>
-<a href="https://www.npmjs.com/package/zod-request" rel="nofollow"><img src="https://img.shields.io/npm/v/zod-request.svg?color=0c0" alt="Zod Web API NPM version"></a>
-<a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/ottersoft-x/zod-request" alt="License"></a>
+<a href="https://github.com/ottersoft-x/zod-web-api/actions?query=branch%3Amain"><img src="https://github.com/ottersoft-x/zod-web-api/actions/workflows/main.yml/badge.svg?event=push&branch=main" alt="Zod Web API CI status" /></a>
+<a href="https://www.npmjs.com/package/zod-web-api" rel="nofollow"><img src="https://img.shields.io/npm/v/zod-web-api.svg?color=0c0" alt="Zod Web API NPM version"></a>
+<a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/ottersoft-x/zod-web-api" alt="License"></a>
 </p>
 
 ## Basic usage
