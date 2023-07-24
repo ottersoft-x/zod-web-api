@@ -1,15 +1,15 @@
 {
   "name": "zod-request",
   "description": "zod-request simplifies the process of integrating Zod with Request, URLSearchParams, and FormData.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "author": "Armando Garcia",
   "license": "MIT",
   "files": [
     "dist"
   ],
-  "module": "./dist/zod-request.js",
-  "types": "./dist/zod-request.d.ts",
+  "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
