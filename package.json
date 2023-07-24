@@ -1,17 +1,27 @@
 {
   "name": "zod-request",
-  "version": "0.0.2",
   "description": "zod-request simplifies the process of integrating Zod with Request, URLSearchParams, and FormData.",
-  "main": "main.js",
+  "version": "0.0.3",
   "type": "module",
   "author": "Armando Garcia",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/zod-request.js",
+  "types": "./dist/zod-request.d.ts",
   "scripts": {
-    "test": "node --test",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest",
     "format": "prettier . --write"
   },
   "devDependencies": {
-    "prettier": "3.0.0"
+    "prettier": "3.0.0",
+    "typescript": "^5.1.3",
+    "vite": "^4.3.9",
+    "vite-plugin-dts": "^3.3.1",
+    "vitest": "^0.33.0"
   },
   "peerDependencies": {
     "zod": "^3.21.0"
