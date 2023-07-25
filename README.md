@@ -12,9 +12,11 @@
 <a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/ottersoft-x/zod-web-api" alt="License"></a>
 </p>
 
-## Quick Start
+## Basic usage
 
-Parsing URLSearchParams
+#### parseQueryAsync
+
+Parses a query from a `string` URL, `URLSearchParams`, or `Request` object using a Zod schema.
 
 ```ts
 import { z } from "zod";
@@ -56,7 +58,9 @@ submission = await parseQueryAsync(request, schema);
 
 ```
 
-Parsing FormData
+#### parseFormDataAsync
+
+Parses form data from a `FormData` or `Request` object using a Zod schema.
 
 ```ts
 import { z } from "zod";
@@ -98,11 +102,13 @@ submission = await parseFormDataAsync(request, schema)
 
 ```
 
-Parsing Request
+#### parseRequestAsync
+
+Parses a `Request`'s query and form data using a Zod schema. The query and form data are merged together before parsing.
 
 ```ts
 import { z } from "zod";
-import { parseRequest } from "zod-web-api";
+import { parseRequestAsync } from "zod-web-api";
 
 // create schema
 const schema = z.object({
@@ -122,9 +128,9 @@ formData.append("email", "john@example.com");
 
 // create Request
 const request = new Request(`https://example.com?${searchParams}`, { method: "POST", body: formData });
-const submission = await parseRequest(request, schema);
+const submission = await parseRequestAsync(request, schema);
 
-// the parseRequest call above would return this fully typed object
+// the parseRequestAsync call above would return this fully typed object
 {
   username: "john",
   email: "john@example",
@@ -179,9 +185,42 @@ let submission = await parseFormDataAsync(formData, schema);
 }
 ```
 
+## Utilities
+
+`Zod Web API` also comes with a couple utilities that help with common tasks
+
+#### Transformer: findBy
+
+Returns the first item with a property matching the passed value.
+
+```ts
+import { zt } from "zod-web-api";
+
+const users = [
+  { id: 1, name: "Christine" },
+  { id: 2, name: "Danielle" },
+  { id: 2, name: "Tom" },
+];
+
+const schema = z.string().transform(zt.findBy("name", users));
+schema.parse("Tom"); // { id: 2, name: 'Tom' }
+```
+
+#### Transformer: json
+
+Validates JSON encoded as a string, then returns the parsed value
+
+```ts
+import { zt } from "zod-web-api";
+
+const schema = z.string().transform(zt.json(z.object({ name: z.string() })));
+schema.parse('{"name": "John"}'); // { name: 'John' }
+```
+
 ## Credits
 
 `Zod Web API` was heavily influenced by the following projects:
 
+- [Zod Utilz](https://github.com/JacobWeisenburger/zod_utilz) by [JacobWeisenburger](https://github.com/JacobWeisenburger)
 - [Conform](https://github.com/edmundhung/conform) by [edmundhung](https://github.com/edmundhung)
 - [Zodix](https://github.com/rileytomasek/zodix) by [rileytomasek](https://github.com/rileytomasek)

@@ -7,20 +7,42 @@ import { RefinementCtx, z, type ZodTypeAny } from "zod";
  * @param {TSchema} schema - The Zod schema to use for parsing.
  *
  * @example
+ * import { z } from "zod";
+ * import { parseQueryAsync } from "zod-web-api";
+ *
  * // create schema
  * const schema = z.object({
- *   q: z.string(),
+ *   username: z.string(),
+ *   email: z.string().email(),
+ *   age: z.number().int().min(18),
+ *   newsletter: z.boolean()
  * });
  *
+ * // create URLSearchParams
+ * const searchParams = new URLSearchParams();
+ * searchParams.append("username", "john");
+ * searchParams.append("email", "john@example.com");
+ * searchParams.append("age", "23");
+ * searchParams.append("newsletter", "false");
+ *
  * // parse
- * const url = "https://example.com?searchQuery=photos";
- * const submission = await parseQueryAsync(url, schema);
+ * let submission = await parseQueryAsync(searchParams, schema);
  *
- * // submission will be this fully typed object
+ * // also accepts a string of the full URL
+ * const url = `https://example.com?${searchParams}`;
+ * submission = await parseQueryAsync(url, schema);
+ *
+ * // also accepts a Request object
+ * const request = new Request(url);
+ * submission = await parseQueryAsync(request, schema);
+ *
+ * // the three parseQueryAsync calls above would return this fully typed object
  * {
- *  q: "photos"
+ *   username: "john",
+ *   email: "john@example",
+ *   age: 23,
+ *   newsletter: false
  * }
- *
  */
 export async function parseQueryAsync<TValue extends URLSearchParams | string | Request, TSchema extends ZodTypeAny>(
   value: TValue,
@@ -46,24 +68,41 @@ export async function parseQueryAsync<TValue extends URLSearchParams | string | 
  * @param {TSchema} schema - The Zod schema to use for parsing.
  *
  * @example
+ * import { z } from "zod";
+ * import { parseFormDataAsync } from "zod-web-api";
+ *
  * // create schema
  * const schema = z.object({
  *   username: z.string(),
- *   email: z.string()
+ *   email: z.string().email(),
+ *   age: z.number().int().min(18),
+ *   hobbies: z.array(z.string()).min(1)
+ *   newsletter: z.boolean()
  * });
  *
  * // create FormData
  * const formData = new FormData();
  * formData.append("username", "john");
  * formData.append("email", "john@example.com");
+ * formData.append("age", "23");
+ * formData.append("hobbies", "programming");
+ * formData.append("hobbies", "basketball");
+ * formData.append("newsletter", "false");
  *
  * // parse
- * const submission = await parseFormDataAsync(formData, schema);
+ * let submission = await parseFormDataAsync(formData, schema);
  *
- * // submission will be this fully typed object
+ * // also accepts a Request object
+ * const request = new Request(url, { method: "POST", body: formData });
+ * submission = await parseFormDataAsync(request, schema)
+ *
+ * // the two parseFormDataAsync calls above would return this fully typed object
  * {
  *   username: "john",
- *   email: "john@example"
+ *   email: "john@example",
+ *   age: 23,
+ *   hobbies: ["programming", "basketball"]
+ *   newsletter: false
  * }
  *
  */
@@ -90,12 +129,19 @@ export async function parseFormDataAsync<TValue extends FormData | Request, TSch
  * @param {TSchema} schema - The Zod schema to use for parsing.
  *
  * @example
+ * import { z } from "zod";
+ * import { parseRequestAsync } from "zod-web-api";
+ *
  * // create schema
  * const schema = z.object({
- *   searchQuery: z.string(),
  *   username: z.string(),
- *   email: z.string()
+ *   email: z.string().email(),
+ *   q: z.string(),
  * });
+ *
+ * // create URLSearchParams
+ * const searchParams = new URLSearchParams();
+ * searchParams.append("q", "photos");
  *
  * // create FormData
  * const formData = new FormData();
@@ -103,16 +149,14 @@ export async function parseFormDataAsync<TValue extends FormData | Request, TSch
  * formData.append("email", "john@example.com");
  *
  * // create Request
- * const request = new Request("https://example.com?searchQuery=photos", { method: "POST", body: formData });
- *
- * // parse
+ * const request = new Request(`https://example.com?${searchParams}`, { method: "POST", body: formData });
  * const submission = await parseRequestAsync(request, schema);
  *
- * // submission will be this fully typed object
+ * // the parseRequestAsync call above would return this fully typed object
  * {
- *   searchQuery: "photos",
  *   username: "john",
- *   email: "john@example"
+ *   email: "john@example",
+ *   q: "photos"
  * }
  *
  */
@@ -232,33 +276,24 @@ function getPaths(name: string): Array<string | number> {
   });
 }
 
-/**
- * Returns a formatted name from the paths based on the JS syntax convention
- * @example
- * // returns "foo[0].content"
- * formatPaths(['foo', 0, 'content']);
- */
-export function formatPaths(paths: Array<string | number>): string {
-  return paths.reduce<string>((name, path) => {
-    if (typeof path === "number") {
-      return `${name}[${path}]`;
-    }
-
-    if (name === "" || path === "") {
-      return [name, path].join("");
-    }
-
-    return [name, path].join(".");
-  }, "");
-}
-
 export const zt = {
-  findBy<TValue extends string | null | undefined, TArrayItem>(
-    arr: ReadonlyArray<TArrayItem>,
-    matchKey: keyof TArrayItem,
-  ) {
+  /**
+   * Returns the first item with a property matching the passed value.
+   *
+   * @param {keyof TArrayItem} key - The key to match in the array items.
+   * @param {ReadonlyArray<TArrayItem>} arr - The array to search through.
+   *
+   * @example
+   * ```
+   * const users = [{id: 1, name: 'Christine'}, {id: 2, name: 'Danielle'}, {id: 2, name: 'Tom'}];
+   * const schema = z.string().transform(zt.findBy('name', users));
+   * schema.parse('Tom'); // {id: 2, name: 'Tom'}
+   *
+   * ```
+   */
+  findBy<TValue extends string | null | undefined, TArrayItem>(key: keyof TArrayItem, arr: ReadonlyArray<TArrayItem>) {
     return (value: TValue, ctx: RefinementCtx) => {
-      const match = arr.find((x) => x[matchKey] === value);
+      const match = arr.find((x) => x[key] === value);
 
       if (!match) {
         ctx.addIssue({
@@ -271,6 +306,19 @@ export const zt = {
       return match;
     };
   },
+
+  /**
+   * Validates JSON encoded as a string, then returns the parsed value
+   *
+   * @param {TSchema} schema - The schema to use when parsing.
+   *
+   * @example
+   * ```
+   * const schema = z.string().transform(zt.json(z.object({ name: z.string() })));
+   * schema('{"name": "John"}', ctx); // {name: 'John'}
+   *
+   * ```
+   */
   json<TValue extends string | null | undefined, TSchema extends z.ZodTypeAny>(
     schema: TSchema,
   ): (value: TValue, ctx: RefinementCtx) => TValue extends string ? z.output<TSchema> : TValue {

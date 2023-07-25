@@ -20,7 +20,7 @@
     "test": "vitest",
     "format": "run-s format:*",
     "format:prettier": "prettier . --write",
-    "format:lint": "eslint --fix --report-unused-disable-directives .",
+    "format:lint": "DEBUG=eslint:cli-engine eslint --fix --report-unused-disable-directives .",
     "format:tsc": "tsc"
   },
   "devDependencies": {
@@ -55,6 +55,13 @@
       "plugin:@typescript-eslint/recommended",
       "prettier"
     ],
+    "ignorePatterns": [
+      "dist",
+      "node_modules"
+    ],
+    "env": {
+      "browser": true
+    },
     "rules": {
       "@typescript-eslint/no-explicit-any": "off"
     }
