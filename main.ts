@@ -1,10 +1,10 @@
-import { z, type ZodTypeAny } from "zod";
+import { RefinementCtx, z, type ZodTypeAny } from "zod";
 
 /**
  * Parses a query from a URL, URLSearchParams, or Request using a Zod schema.
  *
  * @param {URLSearchParams | string | Request} value - The query to parse.
- * @param {T} schema - The Zod schema to use for parsing.
+ * @param {TSchema} schema - The Zod schema to use for parsing.
  *
  * @example
  * // create schema
@@ -22,21 +22,28 @@ import { z, type ZodTypeAny } from "zod";
  * }
  *
  */
-export async function parseQueryAsync<T extends ZodTypeAny>(value: URLSearchParams | string | Request, schema: T) {
+export async function parseQueryAsync<TValue extends URLSearchParams | string | Request, TSchema extends ZodTypeAny>(
+  value: TValue,
+  schema: TSchema,
+) {
+  let searchParams: URLSearchParams;
+
   if (typeof value === "string") {
-    value = new URL(value).searchParams;
+    searchParams = new URL(value).searchParams;
   } else if (value instanceof Request) {
-    value = new URL(value.url).searchParams;
+    searchParams = new URL(value.url).searchParams;
+  } else {
+    searchParams = value;
   }
 
-  return z.instanceof(URLSearchParams).transform(toRecord).pipe(schema).parse(value);
+  return z.instanceof(URLSearchParams).transform(toRecord).pipe(schema).parse(searchParams);
 }
 
 /**
  * Parses form data from a FormData or Request using a Zod schema.
  *
  * @param {FormData | Request} value - The form data to parse.
- * @param {T} schema - The Zod schema to use for parsing.
+ * @param {TSchema} schema - The Zod schema to use for parsing.
  *
  * @example
  * // create schema
@@ -60,8 +67,17 @@ export async function parseQueryAsync<T extends ZodTypeAny>(value: URLSearchPara
  * }
  *
  */
-export async function parseFormDataAsync<T extends ZodTypeAny>(value: FormData | Request, schema: T) {
-  value = value instanceof Request ? await value.formData() : value;
+export async function parseFormDataAsync<TValue extends FormData | Request, TSchema extends ZodTypeAny>(
+  value: TValue,
+  schema: TSchema,
+) {
+  let formData: FormData;
+
+  if (value instanceof Request) {
+    formData = await value.formData();
+  } else {
+    formData = value;
+  }
 
   return z.instanceof(FormData).transform(toRecord).pipe(schema).parse(value);
 }
@@ -71,7 +87,7 @@ export async function parseFormDataAsync<T extends ZodTypeAny>(value: FormData |
  * The query and form data are merged together before parsing.
  *
  * @param {Request} request - The request to parse.
- * @param {T} schema - The Zod schema to use for parsing.
+ * @param {TSchema} schema - The Zod schema to use for parsing.
  *
  * @example
  * // create schema
@@ -100,7 +116,7 @@ export async function parseFormDataAsync<T extends ZodTypeAny>(value: FormData |
  * }
  *
  */
-export async function parseRequestAsync<T extends ZodTypeAny>(request: Request, schema: T) {
+export async function parseRequestAsync<TSchema extends ZodTypeAny>(request: Request, schema: TSchema) {
   if (!containsFormData(request)) {
     return parseQueryAsync(request, schema);
   }
@@ -235,3 +251,44 @@ export function formatPaths(paths: Array<string | number>): string {
     return [name, path].join(".");
   }, "");
 }
+
+export const zt = {
+  findBy<TValue extends string | null | undefined, TArrayItem>(
+    arr: ReadonlyArray<TArrayItem>,
+    matchKey: keyof TArrayItem,
+  ) {
+    return (value: TValue, ctx: RefinementCtx) => {
+      const match = arr.find((x) => x[matchKey] === value);
+
+      if (!match) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Must match a value from the provided array.",
+        });
+        return z.NEVER;
+      }
+
+      return match;
+    };
+  },
+  json<TValue extends string | null | undefined, TSchema extends z.ZodTypeAny>(
+    schema: TSchema,
+  ): (value: TValue, ctx: RefinementCtx) => TValue extends string ? z.output<TSchema> : TValue {
+    return (value: TValue, ctx: RefinementCtx) => {
+      if (value == null) {
+        return value;
+      }
+
+      try {
+        const parsed = JSON.parse(value);
+        return schema.parse(parsed);
+      } catch (error) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Must be a valid JSON string.",
+        });
+        return z.NEVER;
+      }
+    };
+  },
+};

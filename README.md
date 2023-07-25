@@ -12,7 +12,7 @@
 <a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/ottersoft-x/zod-web-api" alt="License"></a>
 </p>
 
-## Basic usage
+## Quick Start
 
 Parsing URLSearchParams
 
