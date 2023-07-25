@@ -1,3 +1,9 @@
 {
-  "recommendations": ["esbenp.prettier-vscode"]
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "rohit-gohri.format-code-action",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker",
+    "zixuanchen.vitest-explorer"
+  ]
 }

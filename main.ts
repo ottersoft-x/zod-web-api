@@ -79,7 +79,7 @@ export async function parseFormDataAsync<TValue extends FormData | Request, TSch
     formData = value;
   }
 
-  return z.instanceof(FormData).transform(toRecord).pipe(schema).parse(value);
+  return z.instanceof(FormData).transform(toRecord).pipe(schema).parse(formData);
 }
 
 /**
