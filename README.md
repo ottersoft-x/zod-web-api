@@ -71,7 +71,7 @@ const schema = z.object({
   username: z.string(),
   email: z.string().email(),
   age: z.number().int().min(18),
-  hobbies: z.array(z.string()).min(1)
+  hobbies: z.array(z.string()).min(1),
   newsletter: z.boolean()
 });
 
@@ -88,15 +88,16 @@ formData.append("newsletter", "false");
 let submission = await parseFormDataAsync(formData, schema);
 
 // also accepts a Request object
+const url = `https://example.com`;
 const request = new Request(url, { method: "POST", body: formData });
-submission = await parseFormDataAsync(request, schema)
+submission = await parseFormDataAsync(request, schema);
 
 // the two parseFormDataAsync calls above would return this fully typed object
 {
   username: "john",
-  email: "john@example",
+  email: "john@example.com",
   age: 23,
-  hobbies: ["programming", "basketball"]
+  hobbies: ["programming", "basketball"],
   newsletter: false
 }
 
@@ -133,7 +134,7 @@ const submission = await parseRequestAsync(request, schema);
 // the parseRequestAsync call above would return this fully typed object
 {
   username: "john",
-  email: "john@example",
+  email: "john@example.com",
   q: "photos"
 }
 
