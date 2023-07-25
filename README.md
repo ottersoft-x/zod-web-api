@@ -46,7 +46,7 @@ submission = await parseQueryAsync(url, schema);
 const request = new Request(url);
 submission = await parseQueryAsync(request, schema);
 
-// the three parse variations above would return this fully typed object
+// the three parseQueryAsync calls above would return this fully typed object
 {
   username: "john",
   email: "john@example",
@@ -87,7 +87,7 @@ let submission = await parseFormDataAsync(formData, schema);
 const request = new Request(url, { method: "POST", body: formData });
 submission = await parseFormDataAsync(request, schema)
 
-// the two parse variations above would return this fully typed object
+// the two parseFormDataAsync calls above would return this fully typed object
 {
   username: "john",
   email: "john@example",
@@ -124,7 +124,7 @@ formData.append("email", "john@example.com");
 const request = new Request(`https://example.com?${searchParams}`, { method: "POST", body: formData });
 const submission = await parseRequest(request, schema);
 
-// the parseRequest method above would return this fully typed object
+// the parseRequest call above would return this fully typed object
 {
   username: "john",
   email: "john@example",
@@ -163,7 +163,7 @@ formData.append("tasks[1].description", "Organize and reply to urgent emails.")
 // parse
 let submission = await parseFormDataAsync(formData, schema);
 
-// the parseFormDataAsync method above would return this fully typed object
+// the parseFormDataAsync call above would return this fully typed object
 {
   username: "john",
   tasks: [

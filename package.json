@@ -1,7 +1,7 @@
 {
   "name": "zod-web-api",
   "description": "Zod Web API simplifies the process of integrating Zod with Web APIs including Request, URLSearchParams, and FormData.",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "type": "module",
   "author": "Armando Garcia <armando.garcia@ottersoft.com>",
   "repository": {
